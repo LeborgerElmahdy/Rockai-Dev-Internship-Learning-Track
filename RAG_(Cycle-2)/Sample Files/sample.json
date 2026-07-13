@@ -1,0 +1,710 @@
+[
+  {
+    "id": 1,
+    "title": "Enterprise Retrieval-Augmented Generation Component 1",
+    "category": "Implementation",
+    "version": "1.1.0",
+    "metadata": {
+      "author": "System Architect 1",
+      "tags": "VectorDB",
+      "score": 0.852
+    },
+    "content": "This is the detailed specification for component 1 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 2,
+    "title": "Enterprise Retrieval-Augmented Generation Component 2",
+    "category": "Architecture",
+    "version": "1.2.0",
+    "metadata": {
+      "author": "System Architect 2",
+      "tags": "LLM",
+      "score": 0.854
+    },
+    "content": "This is the detailed specification for component 2 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 3,
+    "title": "Enterprise Retrieval-Augmented Generation Component 3",
+    "category": "Implementation",
+    "version": "1.3.0",
+    "metadata": {
+      "author": "System Architect 3",
+      "tags": "Embedding",
+      "score": 0.856
+    },
+    "content": "This is the detailed specification for component 3 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 4,
+    "title": "Enterprise Retrieval-Augmented Generation Component 4",
+    "category": "Architecture",
+    "version": "1.4.0",
+    "metadata": {
+      "author": "System Architect 4",
+      "tags": "Chunking",
+      "score": 0.858
+    },
+    "content": "This is the detailed specification for component 4 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 5,
+    "title": "Enterprise Retrieval-Augmented Generation Component 5",
+    "category": "Implementation",
+    "version": "1.0.0",
+    "metadata": {
+      "author": "System Architect 5",
+      "tags": "RAG",
+      "score": 0.86
+    },
+    "content": "This is the detailed specification for component 5 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 6,
+    "title": "Enterprise Retrieval-Augmented Generation Component 6",
+    "category": "Architecture",
+    "version": "1.1.0",
+    "metadata": {
+      "author": "System Architect 6",
+      "tags": "VectorDB",
+      "score": 0.862
+    },
+    "content": "This is the detailed specification for component 6 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 7,
+    "title": "Enterprise Retrieval-Augmented Generation Component 7",
+    "category": "Implementation",
+    "version": "1.2.0",
+    "metadata": {
+      "author": "System Architect 7",
+      "tags": "LLM",
+      "score": 0.864
+    },
+    "content": "This is the detailed specification for component 7 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 8,
+    "title": "Enterprise Retrieval-Augmented Generation Component 8",
+    "category": "Architecture",
+    "version": "1.3.0",
+    "metadata": {
+      "author": "System Architect 8",
+      "tags": "Embedding",
+      "score": 0.866
+    },
+    "content": "This is the detailed specification for component 8 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 9,
+    "title": "Enterprise Retrieval-Augmented Generation Component 9",
+    "category": "Implementation",
+    "version": "1.4.0",
+    "metadata": {
+      "author": "System Architect 9",
+      "tags": "Chunking",
+      "score": 0.868
+    },
+    "content": "This is the detailed specification for component 9 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 10,
+    "title": "Enterprise Retrieval-Augmented Generation Component 10",
+    "category": "Architecture",
+    "version": "1.0.0",
+    "metadata": {
+      "author": "System Architect 10",
+      "tags": "RAG",
+      "score": 0.87
+    },
+    "content": "This is the detailed specification for component 10 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 11,
+    "title": "Enterprise Retrieval-Augmented Generation Component 11",
+    "category": "Implementation",
+    "version": "1.1.0",
+    "metadata": {
+      "author": "System Architect 11",
+      "tags": "VectorDB",
+      "score": 0.872
+    },
+    "content": "This is the detailed specification for component 11 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 12,
+    "title": "Enterprise Retrieval-Augmented Generation Component 12",
+    "category": "Architecture",
+    "version": "1.2.0",
+    "metadata": {
+      "author": "System Architect 12",
+      "tags": "LLM",
+      "score": 0.874
+    },
+    "content": "This is the detailed specification for component 12 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 13,
+    "title": "Enterprise Retrieval-Augmented Generation Component 13",
+    "category": "Implementation",
+    "version": "1.3.0",
+    "metadata": {
+      "author": "System Architect 13",
+      "tags": "Embedding",
+      "score": 0.876
+    },
+    "content": "This is the detailed specification for component 13 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 14,
+    "title": "Enterprise Retrieval-Augmented Generation Component 14",
+    "category": "Architecture",
+    "version": "1.4.0",
+    "metadata": {
+      "author": "System Architect 14",
+      "tags": "Chunking",
+      "score": 0.878
+    },
+    "content": "This is the detailed specification for component 14 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 15,
+    "title": "Enterprise Retrieval-Augmented Generation Component 15",
+    "category": "Implementation",
+    "version": "1.0.0",
+    "metadata": {
+      "author": "System Architect 15",
+      "tags": "RAG",
+      "score": 0.88
+    },
+    "content": "This is the detailed specification for component 15 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 16,
+    "title": "Enterprise Retrieval-Augmented Generation Component 16",
+    "category": "Architecture",
+    "version": "1.1.0",
+    "metadata": {
+      "author": "System Architect 16",
+      "tags": "VectorDB",
+      "score": 0.882
+    },
+    "content": "This is the detailed specification for component 16 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 17,
+    "title": "Enterprise Retrieval-Augmented Generation Component 17",
+    "category": "Implementation",
+    "version": "1.2.0",
+    "metadata": {
+      "author": "System Architect 17",
+      "tags": "LLM",
+      "score": 0.884
+    },
+    "content": "This is the detailed specification for component 17 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 18,
+    "title": "Enterprise Retrieval-Augmented Generation Component 18",
+    "category": "Architecture",
+    "version": "1.3.0",
+    "metadata": {
+      "author": "System Architect 18",
+      "tags": "Embedding",
+      "score": 0.886
+    },
+    "content": "This is the detailed specification for component 18 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 19,
+    "title": "Enterprise Retrieval-Augmented Generation Component 19",
+    "category": "Implementation",
+    "version": "1.4.0",
+    "metadata": {
+      "author": "System Architect 19",
+      "tags": "Chunking",
+      "score": 0.888
+    },
+    "content": "This is the detailed specification for component 19 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 20,
+    "title": "Enterprise Retrieval-Augmented Generation Component 20",
+    "category": "Architecture",
+    "version": "1.0.0",
+    "metadata": {
+      "author": "System Architect 20",
+      "tags": "RAG",
+      "score": 0.89
+    },
+    "content": "This is the detailed specification for component 20 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 21,
+    "title": "Enterprise Retrieval-Augmented Generation Component 21",
+    "category": "Implementation",
+    "version": "1.1.0",
+    "metadata": {
+      "author": "System Architect 21",
+      "tags": "VectorDB",
+      "score": 0.892
+    },
+    "content": "This is the detailed specification for component 21 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 22,
+    "title": "Enterprise Retrieval-Augmented Generation Component 22",
+    "category": "Architecture",
+    "version": "1.2.0",
+    "metadata": {
+      "author": "System Architect 22",
+      "tags": "LLM",
+      "score": 0.894
+    },
+    "content": "This is the detailed specification for component 22 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 23,
+    "title": "Enterprise Retrieval-Augmented Generation Component 23",
+    "category": "Implementation",
+    "version": "1.3.0",
+    "metadata": {
+      "author": "System Architect 23",
+      "tags": "Embedding",
+      "score": 0.896
+    },
+    "content": "This is the detailed specification for component 23 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 24,
+    "title": "Enterprise Retrieval-Augmented Generation Component 24",
+    "category": "Architecture",
+    "version": "1.4.0",
+    "metadata": {
+      "author": "System Architect 24",
+      "tags": "Chunking",
+      "score": 0.898
+    },
+    "content": "This is the detailed specification for component 24 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 25,
+    "title": "Enterprise Retrieval-Augmented Generation Component 25",
+    "category": "Implementation",
+    "version": "1.0.0",
+    "metadata": {
+      "author": "System Architect 25",
+      "tags": "RAG",
+      "score": 0.9
+    },
+    "content": "This is the detailed specification for component 25 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 26,
+    "title": "Enterprise Retrieval-Augmented Generation Component 26",
+    "category": "Architecture",
+    "version": "1.1.0",
+    "metadata": {
+      "author": "System Architect 26",
+      "tags": "VectorDB",
+      "score": 0.902
+    },
+    "content": "This is the detailed specification for component 26 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 27,
+    "title": "Enterprise Retrieval-Augmented Generation Component 27",
+    "category": "Implementation",
+    "version": "1.2.0",
+    "metadata": {
+      "author": "System Architect 27",
+      "tags": "LLM",
+      "score": 0.904
+    },
+    "content": "This is the detailed specification for component 27 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 28,
+    "title": "Enterprise Retrieval-Augmented Generation Component 28",
+    "category": "Architecture",
+    "version": "1.3.0",
+    "metadata": {
+      "author": "System Architect 28",
+      "tags": "Embedding",
+      "score": 0.906
+    },
+    "content": "This is the detailed specification for component 28 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 29,
+    "title": "Enterprise Retrieval-Augmented Generation Component 29",
+    "category": "Implementation",
+    "version": "1.4.0",
+    "metadata": {
+      "author": "System Architect 29",
+      "tags": "Chunking",
+      "score": 0.908
+    },
+    "content": "This is the detailed specification for component 29 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 30,
+    "title": "Enterprise Retrieval-Augmented Generation Component 30",
+    "category": "Architecture",
+    "version": "1.0.0",
+    "metadata": {
+      "author": "System Architect 30",
+      "tags": "RAG",
+      "score": 0.91
+    },
+    "content": "This is the detailed specification for component 30 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 31,
+    "title": "Enterprise Retrieval-Augmented Generation Component 31",
+    "category": "Implementation",
+    "version": "1.1.0",
+    "metadata": {
+      "author": "System Architect 31",
+      "tags": "VectorDB",
+      "score": 0.912
+    },
+    "content": "This is the detailed specification for component 31 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 32,
+    "title": "Enterprise Retrieval-Augmented Generation Component 32",
+    "category": "Architecture",
+    "version": "1.2.0",
+    "metadata": {
+      "author": "System Architect 32",
+      "tags": "LLM",
+      "score": 0.914
+    },
+    "content": "This is the detailed specification for component 32 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 33,
+    "title": "Enterprise Retrieval-Augmented Generation Component 33",
+    "category": "Implementation",
+    "version": "1.3.0",
+    "metadata": {
+      "author": "System Architect 33",
+      "tags": "Embedding",
+      "score": 0.916
+    },
+    "content": "This is the detailed specification for component 33 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 34,
+    "title": "Enterprise Retrieval-Augmented Generation Component 34",
+    "category": "Architecture",
+    "version": "1.4.0",
+    "metadata": {
+      "author": "System Architect 34",
+      "tags": "Chunking",
+      "score": 0.918
+    },
+    "content": "This is the detailed specification for component 34 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 35,
+    "title": "Enterprise Retrieval-Augmented Generation Component 35",
+    "category": "Implementation",
+    "version": "1.0.0",
+    "metadata": {
+      "author": "System Architect 35",
+      "tags": "RAG",
+      "score": 0.92
+    },
+    "content": "This is the detailed specification for component 35 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 36,
+    "title": "Enterprise Retrieval-Augmented Generation Component 36",
+    "category": "Architecture",
+    "version": "1.1.0",
+    "metadata": {
+      "author": "System Architect 36",
+      "tags": "VectorDB",
+      "score": 0.922
+    },
+    "content": "This is the detailed specification for component 36 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 37,
+    "title": "Enterprise Retrieval-Augmented Generation Component 37",
+    "category": "Implementation",
+    "version": "1.2.0",
+    "metadata": {
+      "author": "System Architect 37",
+      "tags": "LLM",
+      "score": 0.924
+    },
+    "content": "This is the detailed specification for component 37 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 38,
+    "title": "Enterprise Retrieval-Augmented Generation Component 38",
+    "category": "Architecture",
+    "version": "1.3.0",
+    "metadata": {
+      "author": "System Architect 38",
+      "tags": "Embedding",
+      "score": 0.926
+    },
+    "content": "This is the detailed specification for component 38 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 39,
+    "title": "Enterprise Retrieval-Augmented Generation Component 39",
+    "category": "Implementation",
+    "version": "1.4.0",
+    "metadata": {
+      "author": "System Architect 39",
+      "tags": "Chunking",
+      "score": 0.928
+    },
+    "content": "This is the detailed specification for component 39 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 40,
+    "title": "Enterprise Retrieval-Augmented Generation Component 40",
+    "category": "Architecture",
+    "version": "1.0.0",
+    "metadata": {
+      "author": "System Architect 40",
+      "tags": "RAG",
+      "score": 0.93
+    },
+    "content": "This is the detailed specification for component 40 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 41,
+    "title": "Enterprise Retrieval-Augmented Generation Component 41",
+    "category": "Implementation",
+    "version": "1.1.0",
+    "metadata": {
+      "author": "System Architect 41",
+      "tags": "VectorDB",
+      "score": 0.932
+    },
+    "content": "This is the detailed specification for component 41 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 42,
+    "title": "Enterprise Retrieval-Augmented Generation Component 42",
+    "category": "Architecture",
+    "version": "1.2.0",
+    "metadata": {
+      "author": "System Architect 42",
+      "tags": "LLM",
+      "score": 0.934
+    },
+    "content": "This is the detailed specification for component 42 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 43,
+    "title": "Enterprise Retrieval-Augmented Generation Component 43",
+    "category": "Implementation",
+    "version": "1.3.0",
+    "metadata": {
+      "author": "System Architect 43",
+      "tags": "Embedding",
+      "score": 0.936
+    },
+    "content": "This is the detailed specification for component 43 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 44,
+    "title": "Enterprise Retrieval-Augmented Generation Component 44",
+    "category": "Architecture",
+    "version": "1.4.0",
+    "metadata": {
+      "author": "System Architect 44",
+      "tags": "Chunking",
+      "score": 0.938
+    },
+    "content": "This is the detailed specification for component 44 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 45,
+    "title": "Enterprise Retrieval-Augmented Generation Component 45",
+    "category": "Implementation",
+    "version": "1.0.0",
+    "metadata": {
+      "author": "System Architect 45",
+      "tags": "RAG",
+      "score": 0.94
+    },
+    "content": "This is the detailed specification for component 45 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 46,
+    "title": "Enterprise Retrieval-Augmented Generation Component 46",
+    "category": "Architecture",
+    "version": "1.1.0",
+    "metadata": {
+      "author": "System Architect 46",
+      "tags": "VectorDB",
+      "score": 0.942
+    },
+    "content": "This is the detailed specification for component 46 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 47,
+    "title": "Enterprise Retrieval-Augmented Generation Component 47",
+    "category": "Implementation",
+    "version": "1.2.0",
+    "metadata": {
+      "author": "System Architect 47",
+      "tags": "LLM",
+      "score": 0.944
+    },
+    "content": "This is the detailed specification for component 47 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 48,
+    "title": "Enterprise Retrieval-Augmented Generation Component 48",
+    "category": "Architecture",
+    "version": "1.3.0",
+    "metadata": {
+      "author": "System Architect 48",
+      "tags": "Embedding",
+      "score": 0.946
+    },
+    "content": "This is the detailed specification for component 48 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 49,
+    "title": "Enterprise Retrieval-Augmented Generation Component 49",
+    "category": "Implementation",
+    "version": "1.4.0",
+    "metadata": {
+      "author": "System Architect 49",
+      "tags": "Chunking",
+      "score": 0.948
+    },
+    "content": "This is the detailed specification for component 49 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 50,
+    "title": "Enterprise Retrieval-Augmented Generation Component 50",
+    "category": "Architecture",
+    "version": "1.0.0",
+    "metadata": {
+      "author": "System Architect 50",
+      "tags": "RAG",
+      "score": 0.95
+    },
+    "content": "This is the detailed specification for component 50 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 51,
+    "title": "Enterprise Retrieval-Augmented Generation Component 51",
+    "category": "Implementation",
+    "version": "1.1.0",
+    "metadata": {
+      "author": "System Architect 51",
+      "tags": "VectorDB",
+      "score": 0.952
+    },
+    "content": "This is the detailed specification for component 51 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 52,
+    "title": "Enterprise Retrieval-Augmented Generation Component 52",
+    "category": "Architecture",
+    "version": "1.2.0",
+    "metadata": {
+      "author": "System Architect 52",
+      "tags": "LLM",
+      "score": 0.954
+    },
+    "content": "This is the detailed specification for component 52 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 53,
+    "title": "Enterprise Retrieval-Augmented Generation Component 53",
+    "category": "Implementation",
+    "version": "1.3.0",
+    "metadata": {
+      "author": "System Architect 53",
+      "tags": "Embedding",
+      "score": 0.956
+    },
+    "content": "This is the detailed specification for component 53 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 54,
+    "title": "Enterprise Retrieval-Augmented Generation Component 54",
+    "category": "Architecture",
+    "version": "1.4.0",
+    "metadata": {
+      "author": "System Architect 54",
+      "tags": "Chunking",
+      "score": 0.958
+    },
+    "content": "This is the detailed specification for component 54 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 55,
+    "title": "Enterprise Retrieval-Augmented Generation Component 55",
+    "category": "Implementation",
+    "version": "1.0.0",
+    "metadata": {
+      "author": "System Architect 55",
+      "tags": "RAG",
+      "score": 0.96
+    },
+    "content": "This is the detailed specification for component 55 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 56,
+    "title": "Enterprise Retrieval-Augmented Generation Component 56",
+    "category": "Architecture",
+    "version": "1.1.0",
+    "metadata": {
+      "author": "System Architect 56",
+      "tags": "VectorDB",
+      "score": 0.962
+    },
+    "content": "This is the detailed specification for component 56 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 57,
+    "title": "Enterprise Retrieval-Augmented Generation Component 57",
+    "category": "Implementation",
+    "version": "1.2.0",
+    "metadata": {
+      "author": "System Architect 57",
+      "tags": "LLM",
+      "score": 0.964
+    },
+    "content": "This is the detailed specification for component 57 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 58,
+    "title": "Enterprise Retrieval-Augmented Generation Component 58",
+    "category": "Architecture",
+    "version": "1.3.0",
+    "metadata": {
+      "author": "System Architect 58",
+      "tags": "Embedding",
+      "score": 0.966
+    },
+    "content": "This is the detailed specification for component 58 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  },
+  {
+    "id": 59,
+    "title": "Enterprise Retrieval-Augmented Generation Component 59",
+    "category": "Implementation",
+    "version": "1.4.0",
+    "metadata": {
+      "author": "System Architect 59",
+      "tags": "Chunking",
+      "score": 0.968
+    },
+    "content": "This is the detailed specification for component 59 in the RAG framework. It handles vector search optimization, embedding caching, and semantic routing across distributed nodes. To ensure robust retrieval performance under high load, this module utilizes token-level chunking with an overlap of 15% and enforces strict metadata filtering prior to vector similarity computation."
+  }
+]
