@@ -180,3 +180,5 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 sample.pdf
+/RAG/Chunked Data
+/RAG/Sample Files
