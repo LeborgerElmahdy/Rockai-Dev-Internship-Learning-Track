@@ -1,6 +1,7 @@
 import re
 import numpy as np
 import tiktoken
+from google import genai
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 encoder = tiktoken.get_encoding("cl100k_base")
@@ -8,8 +9,8 @@ encoder = tiktoken.get_encoding("cl100k_base")
 MAX_TOKENS = 500
 SIM_THRESHOLD = 0.15
 
-
-def semantic_chunk(text: str) -> list[str]:
+#Statistic chunking via TF-IDF, cheaper on api calls but less accurate since no semantic meaning is being extracted.
+def statistic_chunk(text: str) -> list[str]:
     sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
     if len(sentences) <= 1:
         return [text.strip()] if text.strip() else []
@@ -33,3 +34,18 @@ def semantic_chunk(text: str) -> list[str]:
 
     chunks.append(" ".join(current))
     return chunks
+
+if __name__ == "__main__":
+    sample_text = (
+        "Python is a popular programming language. It is used heavily in data science and AI. "
+        "On a completely unrelated note, making lasagna requires pasta sheets and a great sauce. "
+        "Bake the lasagna at 180°C for roughly forty-five minutes. "
+        "Switching topics again, quantum computing uses qubits instead of standard bits."
+    )
+
+    print("--- Running Semantic Chunking ---")
+    resulting_chunks = statistic_chunk(sample_text)
+
+    for index, chunk in enumerate(resulting_chunks):
+        print(f"\n[Chunk {index + 1}]:")
+        print(chunk)
