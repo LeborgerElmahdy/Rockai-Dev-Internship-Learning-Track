@@ -77,8 +77,8 @@ if __name__ == "__main__":
     #     "Bake the lasagna at 180°C for roughly forty-five minutes. "
     #     "Switching topics again, quantum computing uses qubits instead of standard bits."
     # )
-
-    blocks = p.parse_file("RAG/Sample Files/sample.csv")
+    # ADD , rows_per_block = 1 FOR CSV AND XLSX FILES ONLY
+    blocks = p.parse_file("RAG/Sample Files/sample.csv", rows_per_block = 1)
 
     print("=====================Statistic=====================")
     for block in blocks:
