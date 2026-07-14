@@ -4,7 +4,7 @@ import tiktoken
 from dotenv import load_dotenv
 from google import genai
 from sklearn.feature_extraction.text import TfidfVectorizer
-
+from RAG.Pipeline import Gemini_client as gc
 load_dotenv()
 client = genai.Client()
 encoder = tiktoken.get_encoding("cl100k_base")
@@ -18,15 +18,6 @@ def count_tokens(text: str) -> int:
 
 def _split_sentences(text: str) -> list[str]:
     return [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
-
-#changed later for a call to the Embedder class probably, so it can be more robust than this monkey shit
-def embed(sentences: list[str], dim: str = 768) -> np.ndarray:
-    result = client.models.embed_content(
-                model = 'gemini-embedding-001', contents = sentences, config = {"output_dimensionality": dim}
-            )
-    vecs = np.array([e.values for e in result.embeddings])
-    return vecs / np.linalg.norm(vecs, axis=1, keepdims=True) # Vectors are returned normalized manually. Reason in the next method
-
 
 # Takes its inputs from either chunking method, and splits based on cosine similarity.
 def _chunkify(sentences: list[str], vectors: np.ndarray, threshold: float) -> list[str]:
@@ -74,11 +65,11 @@ def semantic_chunk(text: str) -> list[str]:
         return [text.strip()] if text.strip() else []
     
     #Gemini call happens here, returns embeddings with 768 dimensions
-    vector_embeddings = embed(sentences, 768)
+    vector_embeddings = gc.embed_normalized(sentences, config = {"output_dimensionality": 768})
     return _chunkify(sentences, vector_embeddings, SEMANTIC_SIM_THRESHOLD)
 
 
-# For manual testing i guess?
+# For manual testing.
 # if __name__ == "__main__":
 #     sample_text = (
 #         "Python is a popular programming language. It is used heavily in data science and AI. "
@@ -87,10 +78,10 @@ def semantic_chunk(text: str) -> list[str]:
 #         "Switching topics again, quantum computing uses qubits instead of standard bits."
 #     )
 
-#     print("Statistic")
+#     print("=====================Statistic=====================")
 #     for chunk in statistic_chunk(sample_text):
 #         print(chunk)
 
-#     print("Semantic")
+#     print("=====================Semantic=====================")
 #     for chunk in semantic_chunk(sample_text):
 #         print(chunk)

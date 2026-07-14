@@ -44,7 +44,7 @@ def test_retryable_then_success():
             raise make_fake_api_error(429, "RESOURCE_EXHAUSTED", retry_delay=1.5)
         return types.SimpleNamespace(embeddings=[1, 2, 3])
 
-    result = rh.call_gemini_with_handling(flaky)
+    result = rh.call_function_with_handling(flaky)
     assert result.embeddings == [1, 2, 3]
     assert calls["n"] == 2
     print("PASS")
@@ -56,7 +56,7 @@ def test_max_attempts_exceeded():
         raise make_fake_api_error(503, "UNAVAILABLE")
 
     try:
-        rh.call_gemini_with_handling(always_fails)
+        rh.call_function_with_handling(always_fails)
         assert False, "should have raised"
     except errors.APIError as e:
         assert e.code == 503
@@ -72,7 +72,7 @@ def test_non_retryable_404():
         raise make_fake_api_error(404, "NOT_FOUND", "model missing")
 
     try:
-        rh.call_gemini_with_handling(not_found, model="fake-model")
+        rh.call_function_with_handling(not_found, model="fake-model")
         assert False, "should have raised"
     except errors.APIError as e:
         assert e.code == 404
@@ -86,7 +86,7 @@ def test_non_retryable_403():
         raise make_fake_api_error(403, "PERMISSION_DENIED")
 
     try:
-        rh.call_gemini_with_handling(forbidden)
+        rh.call_function_with_handling(forbidden)
         assert False, "should have raised"
     except errors.APIError as e:
         assert e.code == 403
@@ -99,7 +99,7 @@ def test_non_retryable_400():
         raise make_fake_api_error(400, "INVALID_ARGUMENT")
 
     try:
-        rh.call_gemini_with_handling(bad_request)
+        rh.call_function_with_handling(bad_request)
         assert False, "should have raised"
     except errors.APIError as e:
         assert e.code == 400
@@ -116,7 +116,7 @@ def test_network_error_retries():
             raise httpx.ConnectError("connection refused")
         return types.SimpleNamespace(embeddings=[1, 2])
 
-    result = rh.call_gemini_with_handling(flaky_network)
+    result = rh.call_function_with_handling(flaky_network)
     assert result.embeddings == [1, 2]
     assert calls["n"] == 2
     print("PASS")
@@ -128,7 +128,7 @@ def test_network_error_exhausts():
         raise httpx.ConnectError("connection refused")
 
     try:
-        rh.call_gemini_with_handling(always_disconnected)
+        rh.call_function_with_handling(always_disconnected)
         assert False, "should have raised"
     except httpx.ConnectError:
         print("PASS")
@@ -143,7 +143,7 @@ def test_empty_response_validation():
         return types.SimpleNamespace(embeddings=[])
 
     try:
-        rh.call_gemini_with_handling(blocked_content)
+        rh.call_function_with_handling(blocked_content)
         assert False, "should have raised"
     except ValueError as e:
         assert calls["n"] == 1  # not retried

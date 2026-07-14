@@ -78,13 +78,13 @@ def _validate_response(response, model):
             f"Empty embeddings returned by '{model}' — "
             f"input may have been blocked by safety filters or was empty after processing."
         )
-
-def call_gemini_with_handling(fn, *args, model="gemini-embedding-001", **kwargs):
+    
+def call_function_with_handling(fn, *args, model, **kwargs):
     attempt = 0
     while True:
         attempt += 1
         try:
-            response = fn(*args, **kwargs)
+            response = fn(*args,model = model, **kwargs)
             _validate_response(response, model)
             return response
 
