@@ -69,7 +69,7 @@ def parse_txt(txt_path: str) -> list[dict]:
     }]
 
 
-def parse_csv(csv_path: str, rows_per_block: int = 20) -> list[dict]:
+def parse_csv(csv_path: str, rows_per_block: int = 1) -> list[dict]:
     blocks = []
 
     with open(csv_path, "r", encoding="utf-8", errors="ignore", newline="") as f:
@@ -166,7 +166,7 @@ def parse_pptx(pptx_path: str) -> list[dict]:
     return blocks
 
 
-def parse_xlsx(xlsx_path: str, rows_per_block: int = 20) -> list[dict]:
+def parse_xlsx(xlsx_path: str, rows_per_block: int = 1) -> list[dict]:
     blocks = []
     sheets = pd.read_excel(xlsx_path, sheet_name=None, dtype=str)
 
@@ -209,7 +209,7 @@ PARSERS = {
 ROW_BATCHED_TYPES = {".csv", ".xlsx"}
 
 
-def parse_file(file_path: str, rows_per_block: int = 20) -> list[dict]:
+def parse_file(file_path: str, rows_per_block: int = 1) -> list[dict]:
     ext = Path(file_path).suffix.lower()
     parser = PARSERS.get(ext)
     if parser is None:

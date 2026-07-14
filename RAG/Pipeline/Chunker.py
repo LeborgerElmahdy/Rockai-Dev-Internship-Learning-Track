@@ -70,7 +70,7 @@ def semantic_chunk(text: str) -> list[str]:
 
 
 # For manual testing.
-if __name__ == "__main__":
+# if __name__ == "__main__":
     # sample_text = (
     #     "Python is a popular programming language. It is used heavily in data science and AI. "
     #     "On a completely unrelated note, making lasagna requires pasta sheets and a great sauce. "
@@ -78,14 +78,14 @@ if __name__ == "__main__":
     #     "Switching topics again, quantum computing uses qubits instead of standard bits."
     # )
     # ADD , rows_per_block = 1 FOR CSV AND XLSX FILES ONLY
-    blocks = p.parse_file("RAG/Sample Files/sample.csv", rows_per_block = 1)
+    # blocks = p.parse_file("RAG/Sample Files/sample.csv")
 
-    print("=====================Statistic=====================")
-    for block in blocks:
-        for chunk in statistic_chunk(block["text"]):
-            print(f"[SEPARATOR]{chunk}\n")
+    # print("=====================Statistic=====================")
+    # for block in blocks:
+    #     for chunk in statistic_chunk(block["text"]):
+    #         print(f"[SEPARATOR]{chunk}\n")
 
-    print("=====================Semantic=====================")
-    for block in blocks:
-        for chunk in semantic_chunk(block["text"]):
-            print(f"[SEPARATOR]{chunk}\n ")
+    # print("=====================Semantic=====================")
+    # for block in blocks:
+    #     for chunk in semantic_chunk(block["text"]):
+    #         print(f"[SEPARATOR]{chunk}\n ")
