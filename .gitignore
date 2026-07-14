@@ -180,3 +180,4 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 /RAG_(Cycle-2)/Chunked Data
+/RAG/Chunked Data
