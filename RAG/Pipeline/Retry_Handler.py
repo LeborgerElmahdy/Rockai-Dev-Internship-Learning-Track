@@ -13,7 +13,7 @@ client = genai.Client()
 
 @dataclass
 class Retry_Config:
-    max_attempts: int = 30
+    max_attempts: int = 10
     base_delay: float = 1.0
     max_delay: float = 30.0
 

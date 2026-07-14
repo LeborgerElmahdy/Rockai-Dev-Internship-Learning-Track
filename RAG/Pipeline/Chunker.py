@@ -4,7 +4,7 @@ import tiktoken
 from dotenv import load_dotenv
 from google import genai
 from sklearn.feature_extraction.text import TfidfVectorizer
-from RAG.Pipeline import Gemini_client as gc
+from RAG.Pipeline import Gemini_client as gc, Parser as p
 load_dotenv()
 client = genai.Client()
 encoder = tiktoken.get_encoding("cl100k_base")
@@ -70,18 +70,22 @@ def semantic_chunk(text: str) -> list[str]:
 
 
 # For manual testing.
-# if __name__ == "__main__":
-#     sample_text = (
-#         "Python is a popular programming language. It is used heavily in data science and AI. "
-#         "On a completely unrelated note, making lasagna requires pasta sheets and a great sauce. "
-#         "Bake the lasagna at 180°C for roughly forty-five minutes. "
-#         "Switching topics again, quantum computing uses qubits instead of standard bits."
-#     )
+if __name__ == "__main__":
+    # sample_text = (
+    #     "Python is a popular programming language. It is used heavily in data science and AI. "
+    #     "On a completely unrelated note, making lasagna requires pasta sheets and a great sauce. "
+    #     "Bake the lasagna at 180°C for roughly forty-five minutes. "
+    #     "Switching topics again, quantum computing uses qubits instead of standard bits."
+    # )
 
-#     print("=====================Statistic=====================")
-#     for chunk in statistic_chunk(sample_text):
-#         print(chunk)
+    blocks = p.parse_file("RAG/Sample Files/sample.csv")
 
-#     print("=====================Semantic=====================")
-#     for chunk in semantic_chunk(sample_text):
-#         print(chunk)
+    print("=====================Statistic=====================")
+    for block in blocks:
+        for chunk in statistic_chunk(block["text"]):
+            print(f"[SEPARATOR]{chunk}\n")
+
+    print("=====================Semantic=====================")
+    for block in blocks:
+        for chunk in semantic_chunk(block["text"]):
+            print(f"[SEPARATOR]{chunk}\n ")
