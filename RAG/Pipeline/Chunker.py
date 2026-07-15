@@ -5,13 +5,23 @@ from dotenv import load_dotenv
 from google import genai
 from sklearn.feature_extraction.text import TfidfVectorizer
 from RAG.Pipeline import Gemini_client as gc, Parser as p
+from dataclasses import dataclass, field
+
 load_dotenv()
 client = genai.Client()
 encoder = tiktoken.get_encoding("cl100k_base")
 
-MAX_TOKENS = 500
+MAX_TOKENS = 350
 SEMANTIC_SIM_THRESHOLD = 0.6
 STATISTIC_SIM_THRESHOLD = 0.15
+
+@dataclass
+class Chunk:
+    text: str
+    source_file: str
+    block_type: str
+    metadata: dict = field(default_factory=dict)
+    vector: list = field(default_factory=list)
 
 def count_tokens(text: str) -> int:
     return len(encoder.encode(text))
@@ -68,7 +78,18 @@ def semantic_chunk(text: str) -> list[str]:
     vector_embeddings = gc.embed_normalized(sentences, config = {"output_dimensionality": 768})
     return _chunkify(sentences, vector_embeddings, SEMANTIC_SIM_THRESHOLD)
 
-
+def chunk_blocks(blocks: list[dict], method="statistic") -> list[Chunk]:
+    chunker = statistic_chunk if method == "statistic" else semantic_chunk
+    result = []
+    for block in blocks:
+        for chunk_text in chunker(block["text"]):
+            result.append(Chunk(
+                text=chunk_text,
+                source_file=block["source_file"],
+                block_type=block["block_type"],
+                metadata=block["metadata"],
+            ))
+    return result
 # For manual testing.
 # if __name__ == "__main__":
     # sample_text = (

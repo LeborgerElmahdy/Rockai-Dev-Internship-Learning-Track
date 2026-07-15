@@ -1,29 +1,26 @@
 from RAG.Pipeline.Parser import parse_file
-from RAG.Pipeline.Chunker import semantic_chunk, statistic_chunk
-from RAG.Pipeline.Gemini_client import call_function_with_handling
+from RAG.Pipeline.Chunker import chunk_blocks
+from RAG.Pipeline.Gemini_client import embed, embed_normalized, generate
 
-parsed = parse_file("RAG/Sample Files/sample.pdf")
+parsed = parse_file("RAG/Sample Files/sample.txt", rows_per_block = 1)
 
-chunked_stat = []
-chunked_sem = []
+# statistic / semantic
+chunks = chunk_blocks(parsed, method = "semantic")
 
-for block in parsed:
-    for chunk in statistic_chunk(block["text"]):
-        chunked_stat.append({
-            "text": chunk,
-            "source_file": block["source_file"],
-            "block_type": block["block_type"],
-            "metadata": block["metadata"],
-        })
 
-for block in parsed:
-    for chunk in semantic_chunk(block["text"]):
-        chunked_sem.append({
-            "text": chunk,
-            "source_file": block["source_file"],
-            "block_type": block["block_type"],
-            "metadata": block["metadata"],
-        })
+texts = [c.text for c in chunks]
+embedding_result = embed(texts)
 
-print(f"[SEPARATOR_STATSTIC]{chunked_stat[2]["text"]}")
-print(f"[SEPARATOR_SEMANTIC]{chunked_sem[2]["text"]}")
+for chunk, embedding in zip(chunks, embedding_result.embeddings):
+    chunk.vector = embedding.values
+
+# for i in range (0, len(parsed)):
+#      print(f"-{parsed[i]["text"]}\n")
+
+# for i in range (0, len(chunks)):
+#      print(f"-{chunks[i].vector}\n")
+
+print(parsed[0]["text"], "\n")
+
+print(chunks[0].text, "\n")
+print(chunks[0].vector, "\n")

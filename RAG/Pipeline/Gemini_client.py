@@ -18,7 +18,7 @@ def embed_normalized(texts: list[str], model = "gemini-embedding-001", config=No
     return vecs / np.linalg.norm(vecs, axis=1, keepdims=True) # Normalized vector helps with cosine similarity.
 
 # Final embedding step before VectorDB
-def embed(texts: list[str], model = "gemini-embedding-2", config=None):
+def embed(texts: list[str], model = "gemini-embedding-001", config=None):
     return call_function_with_handling(
         client.models.embed_content,
         model=model,
