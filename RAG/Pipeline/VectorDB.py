@@ -1,13 +1,15 @@
 import lancedb
 
-
 def get_table(persist_path: str = "./lancedb_store", table_name: str = "rag_chunks", dim: int = 768):
     db = lancedb.connect(persist_path)
 
     if table_name in db.table_names():
-        return db.open_table(table_name)
+        try:
+            return db.open_table(table_name)
+        except ValueError:
+            # metadata says it exists but data is missing/corrupted
+            db.drop_table(table_name)
 
-    # create with a dummy row just to establish schema, then delete it
     schema_row = [{
         "id": "__init__",
         "text": "",

@@ -132,12 +132,14 @@ def parse_docx(docx_path: str) -> list[dict]:
         if not text:
             continue
 
-        is_heading = para.style.name.lower().startswith("heading")
+        style_name = para.style.name if para.style else ""
+        is_heading = style_name.lower().startswith("heading")
+
         blocks.append({
             "source_file": docx_path,
             "block_type": "heading" if is_heading else "paragraph",
             "text": text,
-            "metadata": {"style": para.style.name},
+            "metadata": {"style": style_name},
         })
 
     return blocks

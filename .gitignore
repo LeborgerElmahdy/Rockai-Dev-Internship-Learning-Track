@@ -181,3 +181,5 @@ cython_debug/
 .cursorindexingignore
 /RAG_(Cycle-2)/Chunked Data
 /RAG/Chunked Data
+/lancedb_store
+/lancedb_store
