@@ -183,3 +183,4 @@ cython_debug/
 /RAG/Chunked Data
 /lancedb_store
 /lancedb_store
+/RAG/lancedb_store

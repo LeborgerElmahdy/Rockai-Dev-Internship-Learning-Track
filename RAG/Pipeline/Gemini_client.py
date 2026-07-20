@@ -10,9 +10,9 @@ client = genai.Client()
 def embed_normalized(texts: list[str], model = "gemini-embedding-001", config=None):
     result = call_function_with_handling(
         client.models.embed_content,
-        model=model,
-        contents=texts,
-        config=config or {"output_dimensionality": 768},
+        model = model,
+        contents = texts,
+        config = config or {"output_dimensionality": 768},
     )
     vecs = np.array([e.values for e in result.embeddings])
     return vecs / np.linalg.norm(vecs, axis=1, keepdims=True) # Normalized vector helps with cosine similarity.
@@ -21,9 +21,9 @@ def embed_normalized(texts: list[str], model = "gemini-embedding-001", config=No
 def embed(texts: list[str], model = "gemini-embedding-001", config=None):
     return call_function_with_handling(
         client.models.embed_content,
-        model=model,
-        contents=texts,
-        config=config or {"output_dimensionality": 768},
+        model = model,
+        contents = texts,
+        config = config or {"output_dimensionality": 768},
     )
 
 # General api call for the LLM models
@@ -37,9 +37,9 @@ def generate(prompt: str, model="gemini-2.5-flash", config=None):
     """
     return call_function_with_handling(
         client.models.generate_content,
-        model=model,
-        contents=prompt,
-        config=config,
+        model = model,
+        contents = prompt,
+        config = config,
     )
 
 
