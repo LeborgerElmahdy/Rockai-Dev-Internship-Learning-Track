@@ -45,7 +45,7 @@ def store_chunks(chunks: list, persist_path: str = "./RAG/lancedb_store", dim: i
 
     return table
 
-def query(query_vector: list, top_k: int = 5, persist_path: str = "./RAG/lancedb_store"):
+def query(query_vector: list, top_k: int = 3, persist_path: str = "./RAG/lancedb_store"):
     table = get_table(persist_path)
     return table.search(query_vector).limit(top_k).to_list()
 

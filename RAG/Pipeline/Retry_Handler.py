@@ -13,7 +13,7 @@ client = genai.Client()
 
 @dataclass
 class Retry_Config:
-    max_attempts: int = 10
+    max_attempts: int = 5
     base_delay: float = 1.0
     max_delay: float = 30.0
 
@@ -45,7 +45,8 @@ def _handle_API_errors(e, attempt, model):
             random.uniform(0.5, 1.5) * Retry_Config.base_delay * (2 ** (attempt - 1)),
             Retry_Config.max_delay,
         )
-        retry_delay = _extract_retry_delay(e) or exp_delay
+        extracted = _extract_retry_delay(e)
+        retry_delay = min(Retry_Config.max_delay, extracted) if extracted is not None else exp_delay
         print(f"Code {e.code}. Backing off. Waiting {retry_delay:.2f}s...")
         time.sleep(retry_delay)
         return

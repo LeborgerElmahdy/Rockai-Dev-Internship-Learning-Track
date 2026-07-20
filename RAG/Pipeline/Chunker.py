@@ -69,26 +69,50 @@ def statistic_chunk(text: str) -> list[str]:
     return _chunkify(sentences, vectors, STATISTIC_SIM_THRESHOLD)
 
 # Gemini Embedding 1 based, costs api calls
-def semantic_chunk(text: str) -> list[str]:
-    sentences = _split_sentences(text)
+def semantic_chunk(sentences: list[str], vectors: np.ndarray) -> list[str]:
     if len(sentences) <= 1:
-        return [text.strip()] if text.strip() else []
-    
-    #Gemini call happens here, returns embeddings with 768 dimensions
-    vector_embeddings = gc.embed_normalized(sentences, config = {"output_dimensionality": 768})
-    return _chunkify(sentences, vector_embeddings, SEMANTIC_SIM_THRESHOLD)
+        return [sentences[0].strip()] if sentences and sentences[0].strip() else []
+    return _chunkify(sentences, vectors, SEMANTIC_SIM_THRESHOLD)
 
 def chunk_blocks(blocks: list[dict], method="statistic") -> list[Chunk]:
-    chunker = statistic_chunk if method == "statistic" else semantic_chunk
     result = []
-    for block in blocks:
-        for chunk_text in chunker(block["text"]):
-            result.append(Chunk(
-                text=chunk_text,
-                source_file=block["source_file"],
-                block_type=block["block_type"],
-                metadata=block["metadata"],
-            ))
+
+    if method == "semantic":
+        # Split every block into sentences up front
+        block_sentences = [_split_sentences(b["text"]) for b in blocks]
+        flat_sentences = [s for sents in block_sentences for s in sents]
+
+        if not flat_sentences:
+            return result
+
+        # One embedding call for the entire file — still one vector per sentence
+        all_vectors = gc.embed_normalized(flat_sentences, config={"output_dimensionality": 768})
+
+        # Slice the flat results back out per block, in order
+        idx = 0
+        for block, sentences in zip(blocks, block_sentences):
+            if not sentences:
+                continue
+            vecs = all_vectors[idx: idx + len(sentences)]
+            idx += len(sentences)
+
+            for chunk_text in semantic_chunk(sentences, vecs):
+                result.append(Chunk(
+                    text=chunk_text,
+                    source_file=block["source_file"],
+                    block_type=block["block_type"],
+                    metadata=block["metadata"],
+                ))
+    else:
+        for block in blocks:
+            for chunk_text in statistic_chunk(block["text"]):
+                result.append(Chunk(
+                    text=chunk_text,
+                    source_file=block["source_file"],
+                    block_type=block["block_type"],
+                    metadata=block["metadata"],
+                ))
+
     return result
 # For manual testing.
 # if __name__ == "__main__":
