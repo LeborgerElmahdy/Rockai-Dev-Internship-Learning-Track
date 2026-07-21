@@ -26,6 +26,31 @@ class Chunk:
 
 def count_tokens(text: str) -> int:
     return len(encoder.encode(text))
+import re
+
+def clean_text(text: str) -> str:
+    # Remove markdown table separator rows, e.g. | --- | --- |
+    text = re.sub(r"^\s*\|?\s*-{2,}\s*(\|\s*-{2,}\s*)+\|?\s*$", "", text, flags=re.MULTILINE)
+
+    # Replace pipe characters (table cell separators) with a period + space,
+    # so cell boundaries become sentence-like breaks instead of merging together.
+    text = re.sub(r"\s*\|\s*", ". ", text)
+
+    # Collapse multiple periods/spaces created by the above (e.g. ".. " or ". . ")
+    text = re.sub(r"\.{2,}", ".", text)
+    text = re.sub(r"\.\s*\.", ".", text)
+
+    # Strip leftover markdown bold/italic markers (**bold**, *italic*)
+    text = re.sub(r"\*{1,3}([^*]+)\*{1,3}", r"\1", text)
+
+    # Collapse excess whitespace/newlines into single spaces
+    text = re.sub(r"\s+", " ", text).strip()
+
+    # Ensure a trailing period so trailing content isn't lost by sentence splitting
+    if text and text[-1] not in ".!?":
+        text += "."
+
+    return text
 
 def _split_sentences(text: str) -> list[str]:
     return [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
@@ -99,6 +124,7 @@ def semantic_chunk(sentences: list[str], vectors: np.ndarray) -> list[str]:
     return _chunkify(sentences, vectors, SEMANTIC_SIM_THRESHOLD)
 
 def chunk_blocks(blocks: list[dict], method="statistic") -> list[Chunk]:
+    blocks = [{**b, "text": clean_text(b["text"])} for b in blocks]
     blocks = _merge_short_blocks(blocks)
     result = []
 

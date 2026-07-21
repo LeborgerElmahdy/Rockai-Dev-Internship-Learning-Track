@@ -1,19 +1,25 @@
-from RAG.Pipeline.Orchestrator import ingest_file, ask
+import RAG.Pipeline.Orchestrator as orc
+
+print("Dropping old Data..")
+orc.drop_table()
 
 #statistic / semantic
-# print("Starting Ingestion Process...")
-# ingest_file("RAG/Sample Files/sample2.docx", method = "semantic")
-# print("Ingestion Complete!")
+print("Starting Ingestion Process...")
+orc.ingest_file("RAG/Sample Files/sample2.docx", method = "semantic")
+print("Ingestion Complete!")
 
 #question = "What software does sohayl use?"
-#question = "What university did sohayl attend?"
+#question = "Where is sohayls profile?"
 question = "what are sohayl's projects?"
 
-print("Query Request pending...")
-results = ask(question, top_k = 3)
-
-print(f"Query:{question} \nResults:")
-
-for r in results:
-    #print(r["id"], r["text"], r["metadata"], r["_distance"])
+print(f"QueryDB results:\n")
+qr = orc.ask(question, top_k = 5)
+for r in qr:
+#     #print(r["id"], r["text"], r["metadata"], r["_distance"])
     print("-",r["text"], r["_distance"])
+
+print("QueryAPI Request pending...")
+result = orc.generate_reply(question, top_k = 5)
+
+print(f"Query:{question} \nResults:{result}")
+

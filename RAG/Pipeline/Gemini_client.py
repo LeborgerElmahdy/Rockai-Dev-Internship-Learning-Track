@@ -29,7 +29,7 @@ def embed(texts: list[str], model = "gemini-embedding-001", config=None):
     )
 
 # General api call for the LLM models
-def generate(prompt: str, model="gemini-2.5-flash", config=None):
+def generate(prompt: str, model="gemini-3-flash", config=None):
     """
     config example: {
         "system_instruction": "You are a helpful assistant.",

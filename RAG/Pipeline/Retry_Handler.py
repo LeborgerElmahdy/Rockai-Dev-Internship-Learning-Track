@@ -13,7 +13,7 @@ client = genai.Client()
 
 @dataclass
 class Retry_Config:
-    max_attempts: int = 1
+    max_attempts: int = 3
     base_delay: float = 1.0
     max_delay: float = 30.0
 
@@ -72,13 +72,21 @@ def _handle_network_error(e, attempt, model):
     time.sleep(delay)
 
 def _validate_response(response, model):
-    """Handles the '200 OK but the payload is wrong' case — Gemini can return
-    a successful response with no embeddings, e.g. if content was safety-blocked."""
-    if not getattr(response, "embeddings", None):
-        raise ValueError(
-            f"Empty embeddings returned by '{model}' — "
-            f"input may have been blocked by safety filters or was empty after processing."
-        )
+    """Handles the '200 OK but the payload is wrong' case."""
+    if hasattr(response, "embeddings"):
+        # Embedding call
+        if not response.embeddings:
+            raise ValueError(
+                f"Empty embeddings returned by '{model}' — "
+                f"input may have been blocked by safety filters or was empty after processing."
+            )
+    else:
+        # Generation call
+        if not getattr(response, "text", None):
+            raise ValueError(
+                f"Empty response returned by '{model}' — "
+                f"input may have been blocked by safety filters, or the model returned no candidates."
+            )
     
 def call_function_with_handling(fn, *args, model, **kwargs):
     attempt = 0
