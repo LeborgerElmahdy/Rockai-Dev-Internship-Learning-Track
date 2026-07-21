@@ -13,7 +13,7 @@ client = genai.Client()
 
 @dataclass
 class Retry_Config:
-    max_attempts: int = 30
+    max_attempts: int = 3
     base_delay: float = 1.0
     max_delay: float = 30.0
 
@@ -21,7 +21,7 @@ class Retry_Config:
 
 # Digs into error logs to see if gemini api attached an exact number of seconds to wait before retry
 def _extract_retry_delay(e) -> float | None:
-    """Pull retryDelay out of the error's details, if present."""
+    "Pull retryDelay out of the error's details, if present."
     try:
         for detail in e.details.get("error", {}).get("details", []):
             if detail.get("@type", "").endswith("RetryInfo"):
@@ -45,7 +45,8 @@ def _handle_API_errors(e, attempt, model):
             random.uniform(0.5, 1.5) * Retry_Config.base_delay * (2 ** (attempt - 1)),
             Retry_Config.max_delay,
         )
-        retry_delay = _extract_retry_delay(e) or exp_delay
+        extracted = _extract_retry_delay(e)
+        retry_delay = min(Retry_Config.max_delay, extracted) if extracted is not None else exp_delay
         print(f"Code {e.code}. Backing off. Waiting {retry_delay:.2f}s...")
         time.sleep(retry_delay)
         return
@@ -71,20 +72,28 @@ def _handle_network_error(e, attempt, model):
     time.sleep(delay)
 
 def _validate_response(response, model):
-    """Handles the '200 OK but the payload is wrong' case — Gemini can return
-    a successful response with no embeddings, e.g. if content was safety-blocked."""
-    if not getattr(response, "embeddings", None):
-        raise ValueError(
-            f"Empty embeddings returned by '{model}' — "
-            f"input may have been blocked by safety filters or was empty after processing."
-        )
-
-def call_gemini_with_handling(fn, *args, model="gemini-embedding-001", **kwargs):
+    """Handles the '200 OK but the payload is wrong' case."""
+    if hasattr(response, "embeddings"):
+        # Embedding call
+        if not response.embeddings:
+            raise ValueError(
+                f"Empty embeddings returned by '{model}' — "
+                f"input may have been blocked by safety filters or was empty after processing."
+            )
+    else:
+        # Generation call
+        if not getattr(response, "text", None):
+            raise ValueError(
+                f"Empty response returned by '{model}' — "
+                f"input may have been blocked by safety filters, or the model returned no candidates."
+            )
+    
+def call_function_with_handling(fn, *args, model, **kwargs):
     attempt = 0
     while True:
         attempt += 1
         try:
-            response = fn(*args, **kwargs)
+            response = fn(*args,model = model, **kwargs)
             _validate_response(response, model)
             return response
 

@@ -1,3 +1,9 @@
+"""
+parsers.py
+Text-only file parsers that emit structure-aware blocks: 
+{source_file, block_type, text, metadata}
+"""
+
 import fitz            # pdf_parser
 import trafilatura     # html_parser
 import chardet         # txt_parser
@@ -7,6 +13,7 @@ import docx            # docx_parser
 import pptx            # pptx_parser
 import pandas as pd    # xlsx_parser
 from pathlib import Path
+
 
 def parse_pdf(pdf_path: str) -> list[dict]:
     blocks = []
@@ -27,6 +34,7 @@ def parse_pdf(pdf_path: str) -> list[dict]:
     doc.close()
     return blocks
 
+
 def parse_html(html_path: str) -> list[dict]:
     with open(html_path, "r", encoding="utf-8", errors="ignore") as f:
         raw_html = f.read()
@@ -41,6 +49,7 @@ def parse_html(html_path: str) -> list[dict]:
         "text": text.strip(),
         "metadata": {},
     }]
+
 
 def parse_txt(txt_path: str) -> list[dict]:
     with open(txt_path, "rb") as f:
@@ -59,7 +68,8 @@ def parse_txt(txt_path: str) -> list[dict]:
         "metadata": {},
     }]
 
-def parse_csv(csv_path: str, rows_per_block) -> list[dict]:
+
+def parse_csv(csv_path: str, rows_per_block: int = 1) -> list[dict]:
     blocks = []
 
     with open(csv_path, "r", encoding="utf-8", errors="ignore", newline="") as f:
@@ -79,6 +89,8 @@ def parse_csv(csv_path: str, rows_per_block) -> list[dict]:
             blocks.append(_make_csv_block(csv_path, headers, batch, "final"))
 
     return blocks
+
+
 def _make_csv_block(source_file, headers, rows, batch_id) -> dict:
     return {
         "source_file": source_file,
@@ -86,6 +98,7 @@ def _make_csv_block(source_file, headers, rows, batch_id) -> dict:
         "text": "\n".join(rows),
         "metadata": {"columns": headers, "batch_id": batch_id},
     }
+
 
 def parse_json(json_path: str) -> list[dict]:
     with open(json_path, "r", encoding="utf-8", errors="ignore") as f:
@@ -99,6 +112,8 @@ def parse_json(json_path: str) -> list[dict]:
         "text": json.dumps(record, ensure_ascii=False),
         "metadata": {"record_index": i},
     } for i, record in enumerate(records)]
+
+
 def _parse_records(raw: str) -> list:
     try:
         data = json.loads(raw)
@@ -106,7 +121,8 @@ def _parse_records(raw: str) -> list:
     except json.JSONDecodeError:
         # fall back to NDJSON (one record per line)
         return [json.loads(line) for line in raw.splitlines() if line.strip()]
-    
+
+
 def parse_docx(docx_path: str) -> list[dict]:
     doc = docx.Document(docx_path)
     blocks = []
@@ -116,15 +132,18 @@ def parse_docx(docx_path: str) -> list[dict]:
         if not text:
             continue
 
-        is_heading = para.style.name.lower().startswith("heading")
+        style_name = para.style.name if para.style else ""
+        is_heading = style_name.lower().startswith("heading")
+
         blocks.append({
             "source_file": docx_path,
             "block_type": "heading" if is_heading else "paragraph",
             "text": text,
-            "metadata": {"style": para.style.name},
+            "metadata": {"style": style_name},
         })
 
     return blocks
+
 
 def parse_pptx(pptx_path: str) -> list[dict]:
     prs = pptx.Presentation(pptx_path)
@@ -148,10 +167,8 @@ def parse_pptx(pptx_path: str) -> list[dict]:
 
     return blocks
 
-import pandas as pd
 
-
-def parse_xlsx(xlsx_path: str, rows_per_block) -> list[dict]:
+def parse_xlsx(xlsx_path: str, rows_per_block: int = 1) -> list[dict]:
     blocks = []
     sheets = pd.read_excel(xlsx_path, sheet_name=None, dtype=str)
 
@@ -177,21 +194,36 @@ def parse_xlsx(xlsx_path: str, rows_per_block) -> list[dict]:
 
     return blocks
 
-Parsers = {
-    ".pdf" : parse_pdf,
+
+PARSERS = {
+    ".pdf": parse_pdf,
     ".html": parse_html,
-    ".htm" : parse_html,
-    ".txt" : parse_txt,
-    ".csv" : parse_csv,
+    ".htm": parse_html,
+    ".txt": parse_txt,
+    ".csv": parse_csv,
     ".json": parse_json,
     ".docx": parse_docx,
     ".pptx": parse_pptx,
     ".xlsx": parse_xlsx,
 }
 
-def parse_file(file_path: str, rows_per_block: int = 20):
+# extensions whose parser accepts a rows_per_block argument
+ROW_BATCHED_TYPES = {".csv", ".xlsx"}
+
+
+def parse_file(file_path: str, rows_per_block: int = 1) -> list[dict]:
     ext = Path(file_path).suffix.lower()
-    parser = Parsers.get(ext)
+    parser = PARSERS.get(ext)
     if parser is None:
         raise ValueError(f"No parser registered for extension: {ext}")
+
+    if ext in ROW_BATCHED_TYPES:
+        return parser(file_path, rows_per_block)
     return parser(file_path)
+
+
+if __name__ == "__main__":
+    for b in parse_file("RAG/Sample Files/sample.txt"):
+        print(b["block_type"], "-", b["metadata"], "-", b["text"][:80])
+
+    print(b)

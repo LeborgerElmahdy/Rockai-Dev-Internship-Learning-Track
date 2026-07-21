@@ -4,29 +4,79 @@ import tiktoken
 from dotenv import load_dotenv
 from google import genai
 from sklearn.feature_extraction.text import TfidfVectorizer
+from RAG.Pipeline import Gemini_client as gc, Parser as p
+from dataclasses import dataclass, field
 
 load_dotenv()
 client = genai.Client()
 encoder = tiktoken.get_encoding("cl100k_base")
 
-MAX_TOKENS = 500
+MAX_TOKENS = 400
+MIN_TOKENS = 100
 SEMANTIC_SIM_THRESHOLD = 0.6
 STATISTIC_SIM_THRESHOLD = 0.15
 
+@dataclass
+class Chunk:
+    text: str
+    source_file: str
+    block_type: str
+    metadata: dict = field(default_factory=dict)
+    vector: list = field(default_factory=list)
+
 def count_tokens(text: str) -> int:
     return len(encoder.encode(text))
+import re
+
+def clean_text(text: str) -> str:
+    # Remove markdown table separator rows, e.g. | --- | --- |
+    text = re.sub(r"^\s*\|?\s*-{2,}\s*(\|\s*-{2,}\s*)+\|?\s*$", "", text, flags=re.MULTILINE)
+
+    # Replace pipe characters (table cell separators) with a period + space,
+    # so cell boundaries become sentence-like breaks instead of merging together.
+    text = re.sub(r"\s*\|\s*", ". ", text)
+
+    # Collapse multiple periods/spaces created by the above (e.g. ".. " or ". . ")
+    text = re.sub(r"\.{2,}", ".", text)
+    text = re.sub(r"\.\s*\.", ".", text)
+
+    # Strip leftover markdown bold/italic markers (**bold**, *italic*)
+    text = re.sub(r"\*{1,3}([^*]+)\*{1,3}", r"\1", text)
+
+    # Collapse excess whitespace/newlines into single spaces
+    text = re.sub(r"\s+", " ", text).strip()
+
+    # Ensure a trailing period so trailing content isn't lost by sentence splitting
+    if text and text[-1] not in ".!?":
+        text += "."
+
+    return text
 
 def _split_sentences(text: str) -> list[str]:
     return [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
 
-#changed later for a call to the Embedder class probably, so it can be more robust than this monkey shit
-def embed(sentences: list[str], dim: str = 768) -> np.ndarray:
-    result = client.models.embed_content(
-                model = 'gemini-embedding-001', contents = sentences, config = {"output_dimensionality": dim}
-            )
-    vecs = np.array([e.values for e in result.embeddings])
-    return vecs / np.linalg.norm(vecs, axis=1, keepdims=True) # Vectors are returned normalized manually. Reason in the next method
 
+def _merge_short_blocks(blocks: list[dict]) -> list[dict]:
+    merged = []
+    buffer = None
+
+    for block in blocks:
+        if buffer is None:
+            buffer = dict(block)  # copy
+        else:
+            buffer["text"] += " " + block["text"]
+
+        if count_tokens(buffer["text"]) >= MIN_TOKENS:
+            merged.append(buffer)
+            buffer = None
+
+    if buffer is not None:
+        if merged:
+            merged[-1]["text"] += " " + buffer["text"]  # tack tiny leftover onto previous
+        else:
+            merged.append(buffer)
+
+    return merged
 
 # Takes its inputs from either chunking method, and splits based on cosine similarity.
 def _chunkify(sentences: list[str], vectors: np.ndarray, threshold: float) -> list[str]:
@@ -68,29 +118,70 @@ def statistic_chunk(text: str) -> list[str]:
     return _chunkify(sentences, vectors, STATISTIC_SIM_THRESHOLD)
 
 # Gemini Embedding 1 based, costs api calls
-def semantic_chunk(text: str) -> list[str]:
-    sentences = _split_sentences(text)
+def semantic_chunk(sentences: list[str], vectors: np.ndarray) -> list[str]:
     if len(sentences) <= 1:
-        return [text.strip()] if text.strip() else []
-    
-    #Gemini call happens here, returns embeddings with 768 dimensions
-    vector_embeddings = embed(sentences, 768)
-    return _chunkify(sentences, vector_embeddings, SEMANTIC_SIM_THRESHOLD)
+        return [sentences[0].strip()] if sentences and sentences[0].strip() else []
+    return _chunkify(sentences, vectors, SEMANTIC_SIM_THRESHOLD)
 
+def chunk_blocks(blocks: list[dict], method="statistic") -> list[Chunk]:
+    blocks = [{**b, "text": clean_text(b["text"])} for b in blocks]
+    blocks = _merge_short_blocks(blocks)
+    result = []
 
-# For manual testing i guess?
+    if method == "semantic":
+        # Split every block into sentences up front
+        block_sentences = [_split_sentences(b["text"]) for b in blocks]
+        flat_sentences = [s for sents in block_sentences for s in sents]
+
+        if not flat_sentences:
+            return result
+
+        # One embedding call for the entire file — still one vector per sentence
+        all_vectors = gc.embed_normalized(flat_sentences, config={"output_dimensionality": 768})
+
+        # Slice the flat results back out per block, in order
+        idx = 0
+        for block, sentences in zip(blocks, block_sentences):
+            if not sentences:
+                continue
+            vecs = all_vectors[idx: idx + len(sentences)]
+            idx += len(sentences)
+
+            for chunk_text in semantic_chunk(sentences, vecs):
+                result.append(Chunk(
+                    text=chunk_text,
+                    source_file=block["source_file"],
+                    block_type=block["block_type"],
+                    metadata=block["metadata"],
+                ))
+    else:
+        for block in blocks:
+            for chunk_text in statistic_chunk(block["text"]):
+                result.append(Chunk(
+                    text=chunk_text,
+                    source_file=block["source_file"],
+                    block_type=block["block_type"],
+                    metadata=block["metadata"],
+                ))
+
+    return result
+# For manual testing.
 # if __name__ == "__main__":
-#     sample_text = (
-#         "Python is a popular programming language. It is used heavily in data science and AI. "
-#         "On a completely unrelated note, making lasagna requires pasta sheets and a great sauce. "
-#         "Bake the lasagna at 180°C for roughly forty-five minutes. "
-#         "Switching topics again, quantum computing uses qubits instead of standard bits."
-#     )
+    # sample_text = (
+    #     "Python is a popular programming language. It is used heavily in data science and AI. "
+    #     "On a completely unrelated note, making lasagna requires pasta sheets and a great sauce. "
+    #     "Bake the lasagna at 180°C for roughly forty-five minutes. "
+    #     "Switching topics again, quantum computing uses qubits instead of standard bits."
+    # )
+    # ADD , rows_per_block = 1 FOR CSV AND XLSX FILES ONLY
+    # blocks = p.parse_file("RAG/Sample Files/sample.csv")
 
-#     print("Statistic")
-#     for chunk in statistic_chunk(sample_text):
-#         print(chunk)
+    # print("=====================Statistic=====================")
+    # for block in blocks:
+    #     for chunk in statistic_chunk(block["text"]):
+    #         print(f"[SEPARATOR]{chunk}\n")
 
-#     print("Semantic")
-#     for chunk in semantic_chunk(sample_text):
-#         print(chunk)
+    # print("=====================Semantic=====================")
+    # for block in blocks:
+    #     for chunk in semantic_chunk(block["text"]):
+    #         print(f"[SEPARATOR]{chunk}\n ")
