@@ -88,7 +88,7 @@ def _validate_response(response, model):
                 f"input may have been blocked by safety filters, or the model returned no candidates."
             )
     
-def call_function_with_handling(fn, *args, model, **kwargs):
+def call_safe_function(fn, *args, model, **kwargs):
     attempt = 0
     while True:
         attempt += 1

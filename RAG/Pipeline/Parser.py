@@ -1,229 +1,94 @@
-"""
-parsers.py
-Text-only file parsers that emit structure-aware blocks: 
-{source_file, block_type, text, metadata}
-"""
-
-import fitz            # pdf_parser
-import trafilatura     # html_parser
-import chardet         # txt_parser
-import csv             # csv_parser
-import json            # json_parser
-import docx            # docx_parser
-import pptx            # pptx_parser
-import pandas as pd    # xlsx_parser
 from pathlib import Path
+from enum import Enum
+import hashlib
+import csv
+import json
+import docx
+import pypdf
 
+class FileType(Enum):
+    DOCX = ".docx"
+    PDF = ".pdf"
+    CSV = ".csv"
+    JSON = ".json"
+    TXT = ".txt"
+    MD = ".md"
 
-def parse_pdf(pdf_path: str) -> list[dict]:
-    blocks = []
-    doc = fitz.open(pdf_path)
+def string_to_hash_id(source_file: str, source_type: str, block_id: int, text: str) -> str:
+    key = f"{source_file}::{source_type}::{block_id}::{text}"
+    return hashlib.sha256(key.encode("utf-8")).hexdigest()
 
-    for page_number, page in enumerate(doc, start=1):
-        text = page.get_text().strip()
-        if not text:
-            continue  # skip empty/scanned pages
+def parse_document(file_path: str | Path) -> str:
+    path = Path(file_path)
+    ext = path.suffix.lower()
+    file_str = str(path)
+    blocks: list[str] = []
 
-        blocks.append({
-            "source_file": pdf_path,
-            "block_type": "page",
-            "text": text,
-            "metadata": {"page_number": page_number},
-        })
-
-    doc.close()
-    return blocks
-
-
-def parse_html(html_path: str) -> list[dict]:
-    with open(html_path, "r", encoding="utf-8", errors="ignore") as f:
-        raw_html = f.read()
-
-    text = trafilatura.extract(raw_html)
-    if not text:
-        return []
-
-    return [{
-        "source_file": html_path,
-        "block_type": "page",
-        "text": text.strip(),
-        "metadata": {},
-    }]
-
-
-def parse_txt(txt_path: str) -> list[dict]:
-    with open(txt_path, "rb") as f:
-        raw = f.read()
-
-    encoding = chardet.detect(raw)["encoding"] or "utf-8"
-    text = raw.decode(encoding, errors="ignore").strip()
-
-    if not text:
-        return []
-
-    return [{
-        "source_file": txt_path,
-        "block_type": "document",
-        "text": text,
-        "metadata": {},
-    }]
-
-
-def parse_csv(csv_path: str, rows_per_block: int = 1) -> list[dict]:
-    blocks = []
-
-    with open(csv_path, "r", encoding="utf-8", errors="ignore", newline="") as f:
-        reader = csv.DictReader(f)
-        headers = reader.fieldnames or []
-        batch = []
-
-        for i, row in enumerate(reader):
-            row_text = ", ".join(f"{k}: {v}" for k, v in row.items())
-            batch.append(row_text)
-
-            if len(batch) >= rows_per_block:
-                blocks.append(_make_csv_block(csv_path, headers, batch, i))
-                batch = []
-
-        if batch:
-            blocks.append(_make_csv_block(csv_path, headers, batch, "final"))
-
-    return blocks
-
-
-def _make_csv_block(source_file, headers, rows, batch_id) -> dict:
-    return {
-        "source_file": source_file,
-        "block_type": "row_group",
-        "text": "\n".join(rows),
-        "metadata": {"columns": headers, "batch_id": batch_id},
-    }
-
-
-def parse_json(json_path: str) -> list[dict]:
-    with open(json_path, "r", encoding="utf-8", errors="ignore") as f:
-        raw = f.read().strip()
-
-    records = _parse_records(raw)
-
-    return [{
-        "source_file": json_path,
-        "block_type": "record",
-        "text": json.dumps(record, ensure_ascii=False),
-        "metadata": {"record_index": i},
-    } for i, record in enumerate(records)]
-
-
-def _parse_records(raw: str) -> list:
     try:
-        data = json.loads(raw)
-        return data if isinstance(data, list) else [data]
-    except json.JSONDecodeError:
-        # fall back to NDJSON (one record per line)
-        return [json.loads(line) for line in raw.splitlines() if line.strip()]
+        file_type = FileType(ext)
+    except ValueError:
+        raise ValueError(f"Unsupported format: {ext}")
 
+    match file_type:
+        # 1. DOCX
+        case FileType.DOCX:
+            doc = docx.Document(path)
+            text = "\n".join([p.text.strip() for p in doc.paragraphs if p.text.strip()])
+            if text:
+                blocks.append(text)
 
-def parse_docx(docx_path: str) -> list[dict]:
-    doc = docx.Document(docx_path)
-    blocks = []
+        # 2. PDF
+        case FileType.PDF:
+            reader = pypdf.PdfReader(path)
+            page_texts = [
+                page.extract_text().strip()
+                for page in reader.pages
+                if page.extract_text() and page.extract_text().strip()
+            ]
+            full_text = "\n\n".join(page_texts)
+            if full_text:
+                blocks.append(full_text)
 
-    for para in doc.paragraphs:
-        text = para.text.strip()
-        if not text:
-            continue
+        # 3. CSV
+        case FileType.CSV:
+            with open(path, mode="r", encoding="utf-8", errors="ignore") as f:
+                reader = csv.reader(f)
+                header = next(reader, None)
 
-        style_name = para.style.name if para.style else ""
-        is_heading = style_name.lower().startswith("heading")
+                if header:
+                    for row in reader:
+                        if row:
+                            paired_row = [
+                                f"{h.strip()}: {v.strip()}"
+                                for h, v in zip(header, row)
+                            ]
+                            blocks.append(" | ".join(paired_row))
 
-        blocks.append({
-            "source_file": docx_path,
-            "block_type": "heading" if is_heading else "paragraph",
-            "text": text,
-            "metadata": {"style": style_name},
-        })
+        # 4. JSON
+        case FileType.JSON:
+            with open(path, mode="r", encoding="utf-8", errors="ignore") as f:
+                data = json.load(f)
+                if isinstance(data, list):
+                    blocks = [json.dumps(item, ensure_ascii=False) for item in data]
+                else:
+                    blocks = [json.dumps(data, indent=2, ensure_ascii=False)]
 
-    return blocks
+        # 5. TXT / MD
+        case FileType.TXT | FileType.MD:
+            with open(path, mode="r", encoding="utf-8", errors="ignore") as f:
+                content = f.read().strip()
+                if content:
+                    blocks.append(content)
 
+    output_blocks = []
+    for i, block in enumerate(blocks):
+        output_blocks.append(
+            {
+                "id": string_to_hash_id(file_str, ext, i, block),
+                "source_file": file_str,
+                "source_type": ext,
+                "text": block,
+            }
+        )
 
-def parse_pptx(pptx_path: str) -> list[dict]:
-    prs = pptx.Presentation(pptx_path)
-    blocks = []
-
-    for i, slide in enumerate(prs.slides, start=1):
-        texts = [
-            shape.text_frame.text.strip()
-            for shape in slide.shapes
-            if shape.has_text_frame and shape.text_frame.text.strip()
-        ]
-        if not texts:
-            continue
-
-        blocks.append({
-            "source_file": pptx_path,
-            "block_type": "slide",
-            "text": "\n".join(texts),
-            "metadata": {"slide_number": i},
-        })
-
-    return blocks
-
-
-def parse_xlsx(xlsx_path: str, rows_per_block: int = 1) -> list[dict]:
-    blocks = []
-    sheets = pd.read_excel(xlsx_path, sheet_name=None, dtype=str)
-
-    for sheet_name, df in sheets.items():
-        df = df.fillna("")
-        rows = [
-            ", ".join(f"{col}: {val}" for col, val in row.items())
-            for _, row in df.iterrows()
-        ]
-
-        for i in range(0, len(rows), rows_per_block):
-            batch = rows[i:i + rows_per_block]
-            blocks.append({
-                "source_file": xlsx_path,
-                "block_type": "row_group",
-                "text": "\n".join(batch),
-                "metadata": {
-                    "sheet": sheet_name,
-                    "columns": list(df.columns),
-                    "batch_id": i // rows_per_block,
-                },
-            })
-
-    return blocks
-
-
-PARSERS = {
-    ".pdf": parse_pdf,
-    ".html": parse_html,
-    ".htm": parse_html,
-    ".txt": parse_txt,
-    ".csv": parse_csv,
-    ".json": parse_json,
-    ".docx": parse_docx,
-    ".pptx": parse_pptx,
-    ".xlsx": parse_xlsx,
-}
-
-# extensions whose parser accepts a rows_per_block argument
-ROW_BATCHED_TYPES = {".csv", ".xlsx"}
-
-
-def parse_file(file_path: str, rows_per_block: int = 1) -> list[dict]:
-    ext = Path(file_path).suffix.lower()
-    parser = PARSERS.get(ext)
-    if parser is None:
-        raise ValueError(f"No parser registered for extension: {ext}")
-
-    if ext in ROW_BATCHED_TYPES:
-        return parser(file_path, rows_per_block)
-    return parser(file_path)
-
-
-if __name__ == "__main__":
-    for b in parse_file("RAG/Sample Files/sample.txt"):
-        print(b["block_type"], "-", b["metadata"], "-", b["text"][:80])
-
-    print(b)
+    return output_blocks

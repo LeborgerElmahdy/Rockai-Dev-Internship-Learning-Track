@@ -1,4 +1,4 @@
-from RAG.Pipeline.Parser import parse_file
+from RAG.Pipeline.Parser import parse_document
 from RAG.Pipeline.Chunker import chunk_blocks
 from RAG.Pipeline.Gemini_client import embed, generate
 from RAG.Pipeline.VectorDB import store_chunks, query, drop
@@ -9,7 +9,7 @@ api = FastAPI()
 
 @api.post('/ingest')
 def ingest_file(path: str, method: str = "semantic", rows_per_block: int = 1):
-    parsed = parse_file(path, rows_per_block)
+    parsed = parse_document(path)
     chunks = chunk_blocks(parsed, method)
 
     texts = [c.text for c in chunks]
