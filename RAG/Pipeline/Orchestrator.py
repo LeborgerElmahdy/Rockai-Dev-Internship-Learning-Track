@@ -17,7 +17,6 @@ def ingest_file(path: str, method: str = "semantic", rows_per_block: int = 1):
 
     for chunk, embedding in zip(chunks, embedding_result.embeddings):
         chunk.vector = embedding.values
-        print(f"ZINGY{chunk} \n")
 
     store_chunks(chunks)
     return {"chunks ingested": len(chunks)}

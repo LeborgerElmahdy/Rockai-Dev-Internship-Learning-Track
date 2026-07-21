@@ -11,7 +11,8 @@ load_dotenv()
 client = genai.Client()
 encoder = tiktoken.get_encoding("cl100k_base")
 
-MAX_TOKENS = 350
+MAX_TOKENS = 400
+MIN_TOKENS = 100
 SEMANTIC_SIM_THRESHOLD = 0.6
 STATISTIC_SIM_THRESHOLD = 0.15
 
@@ -28,6 +29,29 @@ def count_tokens(text: str) -> int:
 
 def _split_sentences(text: str) -> list[str]:
     return [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
+
+
+def _merge_short_blocks(blocks: list[dict]) -> list[dict]:
+    merged = []
+    buffer = None
+
+    for block in blocks:
+        if buffer is None:
+            buffer = dict(block)  # copy
+        else:
+            buffer["text"] += " " + block["text"]
+
+        if count_tokens(buffer["text"]) >= MIN_TOKENS:
+            merged.append(buffer)
+            buffer = None
+
+    if buffer is not None:
+        if merged:
+            merged[-1]["text"] += " " + buffer["text"]  # tack tiny leftover onto previous
+        else:
+            merged.append(buffer)
+
+    return merged
 
 # Takes its inputs from either chunking method, and splits based on cosine similarity.
 def _chunkify(sentences: list[str], vectors: np.ndarray, threshold: float) -> list[str]:
@@ -75,6 +99,7 @@ def semantic_chunk(sentences: list[str], vectors: np.ndarray) -> list[str]:
     return _chunkify(sentences, vectors, SEMANTIC_SIM_THRESHOLD)
 
 def chunk_blocks(blocks: list[dict], method="statistic") -> list[Chunk]:
+    blocks = _merge_short_blocks(blocks)
     result = []
 
     if method == "semantic":

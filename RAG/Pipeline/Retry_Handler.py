@@ -13,7 +13,7 @@ client = genai.Client()
 
 @dataclass
 class Retry_Config:
-    max_attempts: int = 5
+    max_attempts: int = 1
     base_delay: float = 1.0
     max_delay: float = 30.0
 
@@ -21,7 +21,7 @@ class Retry_Config:
 
 # Digs into error logs to see if gemini api attached an exact number of seconds to wait before retry
 def _extract_retry_delay(e) -> float | None:
-    """Pull retryDelay out of the error's details, if present."""
+    "Pull retryDelay out of the error's details, if present."
     try:
         for detail in e.details.get("error", {}).get("details", []):
             if detail.get("@type", "").endswith("RetryInfo"):

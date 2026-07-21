@@ -8,6 +8,7 @@ client = genai.Client()
 
 # For semantic chunking
 def embed_normalized(texts: list[str], model = "gemini-embedding-001", config=None):
+    print(f"[embed_normalized] {len(texts)} texts, 1 request")
     result = call_function_with_handling(
         client.models.embed_content,
         model = model,
@@ -19,6 +20,7 @@ def embed_normalized(texts: list[str], model = "gemini-embedding-001", config=No
 
 # Final embedding step before VectorDB
 def embed(texts: list[str], model = "gemini-embedding-001", config=None):
+    print(f"[embed] {len(texts)} texts, 1 request")
     return call_function_with_handling(
         client.models.embed_content,
         model = model,
