@@ -19,7 +19,7 @@ for r in qr:
     print("-",r["text"], r["_distance"])
 
 print("QueryAPI Request pending...")
-result = orc.generate_reply(question, top_k = 5)
+result = orc.generate_query_reply(question, top_k = 5)
 
 print(f"Query:{question} \nResults:{result}")
 

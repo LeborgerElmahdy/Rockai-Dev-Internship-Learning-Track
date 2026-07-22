@@ -1,187 +1,88 @@
 import re
-import numpy as np
 import tiktoken
-from dotenv import load_dotenv
-from google import genai
+import numpy as np
+from enum import Enum
 from sklearn.feature_extraction.text import TfidfVectorizer
-from RAG.Pipeline import Gemini_client as gc, Parser as p
-from dataclasses import dataclass, field
+from RAG.Pipeline.Gemini_client import embed, normalize_embedding
 
-load_dotenv()
-client = genai.Client()
 encoder = tiktoken.get_encoding("cl100k_base")
-
-MAX_TOKENS = 400
-MIN_TOKENS = 100
-SEMANTIC_SIM_THRESHOLD = 0.6
-STATISTIC_SIM_THRESHOLD = 0.15
-
-@dataclass
-class Chunk:
-    text: str
-    source_file: str
-    block_type: str
-    metadata: dict = field(default_factory=dict)
-    vector: list = field(default_factory=list)
 
 def count_tokens(text: str) -> int:
     return len(encoder.encode(text))
-import re
-
-def clean_text(text: str) -> str:
-    # Remove markdown table separator rows, e.g. | --- | --- |
-    text = re.sub(r"^\s*\|?\s*-{2,}\s*(\|\s*-{2,}\s*)+\|?\s*$", "", text, flags=re.MULTILINE)
-
-    # Replace pipe characters (table cell separators) with a period + space,
-    # so cell boundaries become sentence-like breaks instead of merging together.
-    text = re.sub(r"\s*\|\s*", ". ", text)
-
-    # Collapse multiple periods/spaces created by the above (e.g. ".. " or ". . ")
-    text = re.sub(r"\.{2,}", ".", text)
-    text = re.sub(r"\.\s*\.", ".", text)
-
-    # Strip leftover markdown bold/italic markers (**bold**, *italic*)
-    text = re.sub(r"\*{1,3}([^*]+)\*{1,3}", r"\1", text)
-
-    # Collapse excess whitespace/newlines into single spaces
-    text = re.sub(r"\s+", " ", text).strip()
-
-    # Ensure a trailing period so trailing content isn't lost by sentence splitting
-    if text and text[-1] not in ".!?":
-        text += "."
-
-    return text
 
 def _split_sentences(text: str) -> list[str]:
     return [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
 
+class ChunkMethod(Enum):
+    NAIVE = "naive"
+    STATISTICAL = "statistical"
+    SEMANTIC = "semantic"
 
-def _merge_short_blocks(blocks: list[dict]) -> list[dict]:
-    merged = []
-    buffer = None
-
-    for block in blocks:
-        if buffer is None:
-            buffer = dict(block)  # copy
-        else:
-            buffer["text"] += " " + block["text"]
-
-        if count_tokens(buffer["text"]) >= MIN_TOKENS:
-            merged.append(buffer)
-            buffer = None
-
-    if buffer is not None:
-        if merged:
-            merged[-1]["text"] += " " + buffer["text"]  # tack tiny leftover onto previous
-        else:
-            merged.append(buffer)
-
-    return merged
-
-# Takes its inputs from either chunking method, and splits based on cosine similarity.
-def _chunkify(sentences: list[str], vectors: np.ndarray, threshold: float) -> list[str]:
-    chunks, current_chunk, current_tokens = [], [sentences[0]], count_tokens(sentences[0])
+# Takes input text and vectors (whatever they may be) and performs cosine similary on them and then chunks them.
+def _chunkify(sentences: list[str], vectors: np.ndarray, threshold: float,
+              Max_Tokens: int = 400, Min_Tokens: int = 100) -> list[str]:
+    chunks = []
+    current_chunk = [sentences[0]]
+    cumulative_token_count = count_tokens(sentences[0])
 
     for i in range(1, len(sentences)):
-        a, b = vectors[i -1], vectors[i]
+        a, b = vectors[i - 1], vectors[i]
+        sim = np.dot(a, b)
+        sentence_token_count = count_tokens(sentences[i])
 
-        # Cosine Similarity is usually Dot(A,B) / ||A|| * ||B||
-        # But since in both chunkers, the output is L2 normalized vectors, the denominator will always be 1 so i omitted it's calculation to save performance
-        # Ill keep the original calculation commented just in case.
+        should_break = sim < threshold or cumulative_token_count + sentence_token_count > Max_Tokens
+        below_min = cumulative_token_count < Min_Tokens
 
-        # calculates the ||A|| * ||B|| (denominator)
-        #denom = (np.linalg.norm(a) * np.linalg.norm(b)) or 1e-9
-        #similarity = np.dot(a,b) / denom
-
-        similarity = np.dot(a,b)
-        token_count = count_tokens(sentences[i])
-
-        # Splits if either similarity is too low, or max token count per chunk is reached.
-        if similarity < threshold or token_count + current_tokens > MAX_TOKENS:
-            chunks.append("".join(current_chunk))
-            current_chunk, current_tokens = [sentences[i]], token_count
+        if should_break and not below_min:
+            chunks.append(" ".join(current_chunk))
+            current_chunk = [sentences[i]]
+            cumulative_token_count = sentence_token_count
         else:
             current_chunk.append(sentences[i])
-            current_tokens += token_count
+            cumulative_token_count += sentence_token_count
 
     chunks.append(" ".join(current_chunk))
     return chunks
 
-#Statistic chunking via TF-IDF, cheaper since no api calls but less accurate since no semantic meaning is being extracted.
-def statistic_chunk(text: str) -> list[str]:
+def chunk_naive(text: str, chunk_size: int, overlap: int) -> list[str]:
+    words  = text.split()
+    chunks = []
+    start = 0
+
+    while start < len(words):
+        end = start + chunk_size
+        chunks.append(" ".join(words[start: end]))
+        start += chunk_size - overlap
+    return chunks
+
+def chunk_statistic(text: str, threshold: float = 0.6, min_tokens: int = 100, max_tokens: int = 400) -> list[str]:
+    sentences = _split_sentences(text)
+    if len(sentences) <= 1:
+        return [text.strip()] if text.strip() else []
+    
+    vectors = TfidfVectorizer().fit_transform(sentences).toarray()
+    return _chunkify(sentences, vectors, threshold, Max_Tokens = max_tokens, Min_Tokens = min_tokens)
+
+def chunk_semantic(text: str, threshold: float = 0.6, min_tokens: int = 100, max_tokens: int = 400) -> list[str]:
     sentences = _split_sentences(text)
     if len(sentences) <= 1:
         return [text.strip()] if text.strip() else []
 
-    #Apparently outputs normalized vectors by default? quite nice
-    vectors = TfidfVectorizer().fit_transform(sentences).toarray()
-    return _chunkify(sentences, vectors, STATISTIC_SIM_THRESHOLD)
+    response = embed(sentences)
+    vectors = normalize_embedding(response)
+    return _chunkify(sentences, vectors, threshold, Max_Tokens=max_tokens, Min_Tokens=min_tokens)
 
-# Gemini Embedding 1 based, costs api calls
-def semantic_chunk(sentences: list[str], vectors: np.ndarray) -> list[str]:
-    if len(sentences) <= 1:
-        return [sentences[0].strip()] if sentences and sentences[0].strip() else []
-    return _chunkify(sentences, vectors, SEMANTIC_SIM_THRESHOLD)
+def chunk_block(block: dict, strategy: ChunkMethod) -> list[str]:
+    if block["source_type"] == ".csv":
+        return [block["text"]]
 
-def chunk_blocks(blocks: list[dict], method="statistic") -> list[Chunk]:
-    blocks = [{**b, "text": clean_text(b["text"])} for b in blocks]
-    blocks = _merge_short_blocks(blocks)
-    result = []
+    match strategy:
+        case ChunkMethod.NAIVE:
+            return chunk_naive(block["text"], chunk_size=50, overlap=5)
+        case ChunkMethod.STATISTICAL:
+            return chunk_statistic(block["text"])
+        case ChunkMethod.SEMANTIC:
+            return chunk_semantic(block["text"])
+        case _:
+            raise ValueError(f"Unknown strategy: {strategy}")
 
-    if method == "semantic":
-        # Split every block into sentences up front
-        block_sentences = [_split_sentences(b["text"]) for b in blocks]
-        flat_sentences = [s for sents in block_sentences for s in sents]
-
-        if not flat_sentences:
-            return result
-
-        # One embedding call for the entire file — still one vector per sentence
-        all_vectors = gc.embed_normalized(flat_sentences, config={"output_dimensionality": 768})
-
-        # Slice the flat results back out per block, in order
-        idx = 0
-        for block, sentences in zip(blocks, block_sentences):
-            if not sentences:
-                continue
-            vecs = all_vectors[idx: idx + len(sentences)]
-            idx += len(sentences)
-
-            for chunk_text in semantic_chunk(sentences, vecs):
-                result.append(Chunk(
-                    text=chunk_text,
-                    source_file=block["source_file"],
-                    block_type=block["block_type"],
-                    metadata=block["metadata"],
-                ))
-    else:
-        for block in blocks:
-            for chunk_text in statistic_chunk(block["text"]):
-                result.append(Chunk(
-                    text=chunk_text,
-                    source_file=block["source_file"],
-                    block_type=block["block_type"],
-                    metadata=block["metadata"],
-                ))
-
-    return result
-# For manual testing.
-# if __name__ == "__main__":
-    # sample_text = (
-    #     "Python is a popular programming language. It is used heavily in data science and AI. "
-    #     "On a completely unrelated note, making lasagna requires pasta sheets and a great sauce. "
-    #     "Bake the lasagna at 180°C for roughly forty-five minutes. "
-    #     "Switching topics again, quantum computing uses qubits instead of standard bits."
-    # )
-    # ADD , rows_per_block = 1 FOR CSV AND XLSX FILES ONLY
-    # blocks = p.parse_file("RAG/Sample Files/sample.csv")
-
-    # print("=====================Statistic=====================")
-    # for block in blocks:
-    #     for chunk in statistic_chunk(block["text"]):
-    #         print(f"[SEPARATOR]{chunk}\n")
-
-    # print("=====================Semantic=====================")
-    # for block in blocks:
-    #     for chunk in semantic_chunk(block["text"]):
-    #         print(f"[SEPARATOR]{chunk}\n ")

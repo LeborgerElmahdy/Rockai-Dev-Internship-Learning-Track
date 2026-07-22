@@ -6,7 +6,7 @@ import httpx
 from google import genai
 from dotenv import load_dotenv
 from google.genai import errors
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 load_dotenv()
 client = genai.Client()
@@ -102,6 +102,6 @@ def call_safe_function(fn, *args, model, **kwargs):
 
         except (httpx.ConnectError, httpx.TimeoutException, socket.gaierror, ConnectionError) as e:
             _handle_network_error(e, attempt, model)
-
+    
         except ValueError:
             raise

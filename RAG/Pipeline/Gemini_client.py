@@ -1,4 +1,4 @@
-from RAG.Pipeline.Retry_Handler import call_safe_function
+from RAG.Pipeline.Error_Handler import call_safe_function
 from google import genai
 from dotenv import load_dotenv
 import numpy as np
