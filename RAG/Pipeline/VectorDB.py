@@ -41,6 +41,6 @@ def query(query_vector: list, top_k: int = 3, persist_path: str = "./RAG/lancedb
     return table.search(query_vector).limit(top_k).to_list()
 
 
-def drop(table_name: str = "rag_chunks", persist_path: str = "./RAG/lancedb_store"):
+def drop(table_name: str = "rag_chunks", persist_path: str = "./lancedb_store"):
     db = lancedb.connect(persist_path)
     db.drop_table(table_name, ignore_missing=True)
