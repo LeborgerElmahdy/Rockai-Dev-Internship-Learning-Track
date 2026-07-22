@@ -5,12 +5,13 @@ orc.drop_table()
 
 #statistic / semantic
 print("Starting Ingestion Process...")
-orc.ingest_file("RAG/Sample Files/sample2.docx", method = "semantic")
-print("Ingestion Complete!")
+orc.ingest_file("RAG/Sample Files/sample.pdf", method = "semantic")
+print("Ingestion Complete!\n")
 
 #question = "What software does sohayl use?"
 #question = "Where is sohayls profile?"
-question = "what are sohayl's projects?"
+#question = "what are sohayl's projects?"
+question = "what is the packing structure?"
 
 print(f"QueryDB results:\n")
 qr = orc.ask(question, top_k = 5)
